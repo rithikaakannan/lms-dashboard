@@ -1,100 +1,107 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
 
 st.set_page_config(page_title="LMS Dashboard", layout="wide")
 
-# Smaller fonts and colorful background
+# ---------- Styling ----------
 st.markdown("""
 <style>
-html, body, [class*="css"]  {
-    font-size:14px;
-}
-.main {
-    background-color:#0f172a;
-}
-.metric-box{
-    background: linear-gradient(90deg,#6366f1,#22c55e);
-    padding:10px;
-    border-radius:10px;
-    text-align:center;
-    color:white;
+h1 {font-size:26px !important;}
+h2 {font-size:18px !important;}
+h3 {font-size:16px !important;}
+.block-container{
+    padding-top:1rem;
+    padding-bottom:0rem;
 }
 </style>
 """, unsafe_allow_html=True)
 
 st.title("📚 Centralized Learning Management System")
 
-# Top metrics
+# ---------- Top Metrics ----------
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("👨‍🎓 Students", "320")
-col2.metric("📚 Courses", "18")
-col3.metric("📝 Assignments", "245")
-col4.metric("📅 Attendance Avg", "89%")
+col1.metric("Students", "320")
+col2.metric("Courses", "18")
+col3.metric("Assignments", "245")
+col4.metric("Avg Attendance", "89%")
 
-# Sample data
-days = ["Mon","Tue","Wed","Thu","Fri"]
-attendance = [85,90,88,92,87]
-
+# ---------- Sample Data ----------
 marks_data = pd.DataFrame({
     "Month":["Jan","Feb","Mar","Apr","May"],
-    "Average Marks":[70,75,80,78,85]
+    "Marks":[70,75,80,78,85]
 })
 
-activity = pd.DataFrame({
+attendance_data = pd.DataFrame({
+    "Day":["Mon","Tue","Wed","Thu","Fri"],
+    "Attendance":[85,90,88,92,87]
+})
+
+course_data = pd.DataFrame({
+    "Course":["Web","AI","Cloud","ML"],
+    "Students":[110,80,70,60]
+})
+
+assignment_data = pd.DataFrame({
     "Day":["Mon","Tue","Wed","Thu","Fri"],
     "Submissions":[20,30,25,35,40]
 })
 
-course_data = pd.DataFrame({
-    "Course":["AI","ML","Cloud","Web"],
-    "Students":[80,60,70,110]
-})
-
-# Charts
+# ---------- Charts Row ----------
 col5, col6, col7 = st.columns(3)
 
 with col5:
-    st.subheader("📈 Student Performance")
-    fig = px.line(marks_data, x="Month", y="Average Marks", markers=True,
-                  color_discrete_sequence=["#22c55e"])
-    st.plotly_chart(fig, use_container_width=True)
+    st.subheader("Student Performance")
+    fig1 = px.line(marks_data,
+                   x="Month",
+                   y="Marks",
+                   markers=True,
+                   color_discrete_sequence=["#00f5a0"])
+
+    fig1.update_layout(height=250,font=dict(size=10))
+    st.plotly_chart(fig1,use_container_width=True)
 
 with col6:
-    st.subheader("📊 Attendance Trend")
-    fig2 = px.bar(x=days, y=attendance,
-                  color=attendance,
+    st.subheader("Attendance Trend")
+    fig2 = px.bar(attendance_data,
+                  x="Day",
+                  y="Attendance",
+                  color="Attendance",
                   color_continuous_scale="viridis")
-    st.plotly_chart(fig2, use_container_width=True)
+
+    fig2.update_layout(height=250,font=dict(size=10))
+    st.plotly_chart(fig2,use_container_width=True)
 
 with col7:
-    st.subheader("📚 Course Distribution")
+    st.subheader("Course Distribution")
     fig3 = px.pie(course_data,
                   names="Course",
                   values="Students",
-                  hole=0.5,
-                  color_discrete_sequence=px.colors.sequential.RdBu)
-    st.plotly_chart(fig3, use_container_width=True)
+                  hole=0.5)
 
-# Bottom charts
+    fig3.update_layout(height=250,font=dict(size=10))
+    st.plotly_chart(fig3,use_container_width=True)
+
+# ---------- Bottom Row ----------
 col8, col9 = st.columns(2)
 
 with col8:
-    st.subheader("📝 Assignment Activity")
-    fig4 = px.area(activity,
+    st.subheader("Assignment Activity")
+    fig4 = px.area(assignment_data,
                    x="Day",
                    y="Submissions",
                    color_discrete_sequence=["#6366f1"])
-    st.plotly_chart(fig4, use_container_width=True)
+
+    fig4.update_layout(height=250,font=dict(size=10))
+    st.plotly_chart(fig4,use_container_width=True)
 
 with col9:
-    st.subheader("📋 Attendance Table")
+    st.subheader("Attendance Table")
 
     table = pd.DataFrame({
         "Student":["Ravi","Anitha","Karthik","Divya","Arun"],
         "Attendance %":[90,85,95,88,92]
     })
 
-    st.dataframe(table, use_container_width=True)
+    st.dataframe(table,use_container_width=True)
